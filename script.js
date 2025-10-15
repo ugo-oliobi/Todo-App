@@ -10,7 +10,9 @@ import {
   where,
   orderBy,
   doc,
+  getDoc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -75,6 +77,7 @@ const confirmCloseFormModal = document.getElementById("confirm-close-dialog");
 const closeTaskFormCancelBtn = document.getElementById("closeform-cancel-btn");
 const discardTaskFormBtn = document.getElementById("closeform-discard-btn");
 const todoContainer = document.getElementById("todo-container");
+const addTaskBtn = document.querySelector(".add-task-btn");
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -90,6 +93,9 @@ onAuthStateChanged(auth, (user) => {
 //Collection Name
 
 const collectionName = "todoList";
+let isUpdating = false;
+let todoTaskId;
+
 //Event Listeners
 
 createAccountBtn.addEventListener("click", createAccount);
@@ -101,7 +107,11 @@ googleSigninBtn.addEventListener("click", authSignInWithGoogleAccount);
 proPicCont.addEventListener("click", () => {
   profileDialog.showModal();
 });
-addNewTaskBtn.addEventListener("click", toggleTaskForm);
+addNewTaskBtn.addEventListener("click", () => {
+  addTaskBtn.innerText = "Add Task";
+  isUpdating = false;
+  toggleTaskForm();
+});
 closeFormTaskBtn.addEventListener("click", () => {
   confirmCloseFormModal.showModal();
 });
@@ -139,7 +149,7 @@ saveProfileBtn.addEventListener("click", function (e) {
       clearEditProfileFields();
     })
     .catch((error) => {
-      // An error occurred
+      console.log(error.message);
     });
 });
 
@@ -154,22 +164,30 @@ function addTask(e) {
   addTaskToDB(e);
   toggleTaskForm();
   clearTaskFormFields();
+  addTaskBtn.innerText = "Add Task";
 }
 async function addTaskToDB(e) {
   e.preventDefault();
 
   try {
-    const docRef = await addDoc(collection(db, collectionName), {
-      title: taskTitleInput.value,
-      dueDate: taskDateInput.value,
-      description: taskDescription.value,
-      uid: auth.currentUser.uid,
-      createdAt: serverTimestamp(),
-    });
-
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Document not added");
+    if (isUpdating) {
+      const todoRef = doc(db, collectionName, todoTaskId);
+      await updateDoc(todoRef, {
+        title: taskTitleInput.value,
+        dueDate: taskDateInput.value,
+        description: taskDescription.value,
+      });
+    } else {
+      await addDoc(collection(db, collectionName), {
+        title: taskTitleInput.value,
+        dueDate: taskDateInput.value,
+        description: taskDescription.value,
+        uid: auth.currentUser.uid,
+        createdAt: serverTimestamp(),
+      });
+    }
+  } catch (error) {
+    console.error("Document not added", error.message);
   }
 }
 function clearTaskFormFields() {
@@ -280,19 +298,34 @@ function userGreeting(element, user) {
     element.textContent = `Welcome, ${displayName ? displayName : "friend"}!`;
   }
 }
+
 window.deleteTask = async function (buttonEl) {
   await deleteDoc(doc(db, collectionName, buttonEl.parentElement.id));
 };
+window.editTask = async function (buttonEl) {
+  const taskId = buttonEl.parentElement.id;
+  const docRef = doc(db, collectionName, taskId);
+  const docSnap = await getDoc(docRef);
+  const task = docSnap.data();
+  taskTitleInput.value = task.title;
+  taskDateInput.value = task.dueDate;
+  taskDescription.value = task.description;
+  addTaskBtn.innerText = "Update Task";
+  isUpdating = true;
+  todoTaskId = taskId;
+  toggleTaskForm();
+};
 
 function renderTask(doc, containerEl) {
+  const task = doc.data();
+  const taskId = doc.id;
+
   containerEl.innerHTML += `
-      <div id="${doc.id}" class="task">
-          <p><strong>Title:</strong> ${doc.data().title}</p>
-          <p><strong>Date:</strong> ${doc.data().dueDate}</p>
-          <p><strong>Description:</strong> ${lineBreaks(
-            doc.data().description
-          )}</p>
-          <button type="button" class="btn todoEdit">Edit</button>
+      <div id="${taskId}" class="task">
+          <p><strong>Title:</strong> ${task.title}</p>
+          <p><strong>Date:</strong> ${task.dueDate}</p>
+          <p><strong>Description:</strong> ${lineBreaks(task.description)}</p>
+          <button onclick="editTask(this)" type="button" class="btn todoEdit">Edit</button>
           <button onclick="deleteTask(this)" type="button" class="btn todoDelete">Delete</button>
         </div>
   `;
