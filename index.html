@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Calistoga&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Todo App</title>
+  </head>
+  <body>
+    <section class="logout-view">
+      <div class="container">
+        <h1>TODO APP</h1>
+        <div class="fields-container">
+          <p id="signin-msg"></p>
+          <button id="google-signin" class="btn google-signin-btn">
+            <img class="google" src="assests/google.svg" alt="google-logo" />
+            Sign in with Google
+          </button>
+
+          <input id="email" type="email" placeholder="Email" />
+          <input id="password" type="password" placeholder="Password" />
+          <button class="btn sign-in-btn" id="sign-in">Sign in</button>
+          <button class="btn create-account-btn" id="create-account">
+            Create Account
+          </button>
+        </div>
+      </div>
+      <div class="overlay">
+        <dialog class="modal-display">
+          <h4 id="modal-title">Create an account</h4>
+          <div class="fields-container">
+            <h4 id="create-account-msg"></h4>
+            <input
+              type="email"
+              placeholder="Email"
+              id="create-with-email"
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              id="create-with-pwd"
+              required
+            />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              id="create-with-confirm-pwd"
+              required
+            />
+          </div>
+          <div class="modal-btn">
+            <button id="create-btn" class="btn">Create</button>
+            <button id="cancel-btn" class="btn">Cancel</button>
+          </div>
+        </dialog>
+      </div>
+    </section>
+    <section class="login-view">
+      <header class="header">
+        <div class="profile-pic-container">
+          <img class="profile-pic" />
+        </div>
+        <h1 class="page-title">My ToDo List</h1>
+        <div class="tooltip">
+          <img width="30px" src="assests/signout.svg" class="sign-out" />
+          <span class="tooltiptext">sign out</span>
+        </div>
+      </header>
+      <h4 class="greeting"></h4>
+      <dialog id="profileDialog">
+        <h2 class="profileDialog-title">Edit Profile</h2>
+        <form method="dialog" class="edit-profile-container">
+          <div>
+            <input
+              class="profile-input"
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Display Name"
+            />
+          </div>
+          <div>
+            <!-- <label for="picture">Profile Picture:</label>
+            <input type="file" id="picture" name="picture" accept="image/*" /> -->
+
+            <input
+              class="profile-input"
+              type="text"
+              id="profile-picture"
+              name="name"
+              placeholder="Profile Picture"
+            />
+          </div>
+          <menu class="menu-btn">
+            <button id="cancelBtn" class="btn" value="cancel">Cancel</button>
+            <button id="saveBtn" class="btn" value="save">Save</button>
+          </menu>
+        </form>
+      </dialog>
+      <div class="task-container">
+        <button class="btn add-new-task">Add New Task</button>
+        <form class="task-form hidden" id="task-form">
+          <div class="task-form-header">
+            <img src="assests/closeButton.svg" class="close-form-btn" />
+          </div>
+          <div class="form-body">
+            <label for="task-title" class="form-label">Title</label>
+            <input
+              id="task-title"
+              class="form-input"
+              type="text"
+              required
+              value=""
+            />
+            <label class="form-label" for="form-date">Date</label
+            ><input
+              id="form-date"
+              type="date"
+              class="form-input"
+              value=""
+              required
+            />
+            <label class="form-label" for="form-description">Description</label>
+            <textarea
+              id="form-description"
+              class="form-input"
+              cols="30"
+              rows="5"
+              required
+            ></textarea>
+          </div>
+          <div class="form-footer">
+            <button class="btn add-task-btn">Add Task</button>
+          </div>
+        </form>
+        <div id="todo-container"></div>
+      </div>
+      <dialog id="confirm-close-dialog">
+        <form method="dialog">
+          <p class="discard-message-text">Discard unsaved changes?</p>
+          <div class="confirm-close-dialog-btn-container">
+            <button id="closeform-cancel-btn" class="btn">Cancel</button>
+            <button id="closeform-discard-btn" class="btn">Discard</button>
+          </div>
+        </form>
+      </dialog>
+    </section>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>

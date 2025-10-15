@@ -1,0 +1,304 @@
+:root {
+  --gray-color1: #ebf0f5;
+  --gray-color2: #9ea4ac;
+  --gray-color3: #5a5b5c;
+  --button-color1: #7293da;
+  --button-color2: #52c882;
+  --button-color3: #40e0d0;
+  --button-color4: #f8a0d0;
+  --primary-font: "roboto", sans-serif;
+  --secondary-font: "Calistoga", sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+  padding-bottom: 200px;
+  min-height: 100vh;
+  background: linear-gradient(var(--gray-color1), var(--gray-color2));
+  font-family: var(--primary-font);
+}
+h1 {
+  text-align: center;
+  margin-top: 50px;
+  font-family: var(--secondary-font);
+  color: rgb(50, 50, 50);
+  font-size: 2.5rem;
+}
+.google {
+  width: 20px;
+  margin-right: 10px;
+}
+.google-signin-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+.modal-display {
+  border: none;
+  border-radius: 5px;
+}
+.btn {
+  border: none;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px 2px var(--gray-color3);
+  border-radius: 5px;
+  font-family: "roboto", sans-serif;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.modal-btn {
+  display: flex;
+  justify-content: space-between;
+}
+.modal-btn > button,
+.menu-btn > button {
+  padding: 5px 15px;
+  background-color: var(--button-color1);
+}
+#modal-title {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+.fields-container {
+  margin: 50px auto;
+  width: 300px;
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+}
+.fields-container > button {
+  height: 35px;
+}
+.fields-container > input {
+  height: 30px;
+  font-size: 17px;
+  padding-left: 5px;
+}
+.sign-in-btn {
+  background-color: var(--button-color3);
+}
+.login-view {
+  display: none;
+  height: 100%;
+}
+.logout-view {
+  display: none;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: 1;
+  display: none;
+}
+
+dialog {
+  position: fixed;
+  z-index: 2;
+}
+#create-account-msg,
+#signin-msg {
+  margin: 0;
+  text-align: center;
+  color: red;
+}
+.page-title {
+  margin: 0;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 25px;
+  align-items: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 80px;
+  background-color: rgb(152, 169, 224);
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: -100%;
+  left: 5px;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+.profile-pic-container {
+  width: 40px;
+  height: 40px;
+  border: 2px solid black;
+  border-radius: 100%;
+  cursor: pointer;
+}
+.profile-pic {
+  width: 100%;
+  object-fit: contain;
+  border-radius: 100%;
+}
+.greeting {
+  padding-left: 25px;
+}
+
+.edit-profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.profileDialog-title {
+  margin: 0;
+}
+.menu-btn {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  gap: 10px;
+  justify-content: space-around;
+  margin-top: 1em;
+}
+#cancelBtn,
+#saveBtn {
+  width: 80px;
+}
+#profileDialog {
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  margin: 0;
+  padding: 1em;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(168, 204, 238, 0.9);
+  box-shadow: 0 0 10px rgba(137, 196, 191, 0.3);
+}
+.task-container {
+  width: 350px;
+  max-width: 400px;
+  margin: 10px auto;
+  height: 400px;
+  padding: 15px;
+  border: 4px solid var(--gray-color3);
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.add-new-task {
+  background-color: var(--button-color2);
+  padding: 5px 15px;
+}
+.task-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px;
+  width: 360px;
+  height: 410px;
+  background-color: white;
+  border-radius: 10px;
+}
+.close-form-btn {
+  width: 18px;
+  margin-left: 0 auto;
+}
+.task-form-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.hidden {
+  display: none;
+}
+.form-body {
+  display: flex;
+  flex-direction: column;
+}
+.form-label {
+  font-family: var(--secondary-font);
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 10px;
+}
+.form-input {
+  padding: 5px;
+}
+.form-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+.add-task-btn {
+  background-color: var(--button-color3);
+  padding: 5px 15px;
+}
+#confirm-close-dialog {
+  border: none;
+  border-radius: 5px;
+  position: fixed;
+  bottom: 300px;
+}
+.confirm-close-dialog-btn-container {
+  display: flex;
+  justify-content: space-between;
+}
+.confirm-close-dialog-btn-container > button {
+  background-color: var(--button-color3);
+}
+#todo-container {
+  margin-top: 10px;
+  width: 100%;
+  overflow-y: scroll;
+}
+.todoContainer-btn {
+  display: flex;
+  justify-content: space-between;
+}
+.todoEdit,
+.todoDelete {
+  width: 30%;
+  margin: 5px 9.6%;
+}
+.todoEdit {
+  background-color: var(--button-color1);
+}
+.todoDelete {
+  background-color: var(--button-color4);
+}
+.task > p {
+  margin: 5px 0px;
+}
+.task {
+  background-color: var(--gray-color1);
+  border-radius: 10px;
+  padding: 15px;
+  width: 100%;
+  margin-top: 10px;
+}
