@@ -2,6 +2,7 @@
   --gray-color1: #ebf0f5;
   --gray-color2: #9ea4ac;
   --gray-color3: #5a5b5c;
+  --pale-green: #b8e4c2;
   --button-color1: #7293da;
   --button-color2: #52c882;
   --button-color3: #40e0d0;
@@ -301,4 +302,18 @@ dialog {
   padding: 15px;
   width: 100%;
   margin-top: 10px;
+}
+
+.checked-text {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.checked-text > input {
+  margin-left: 0;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.completed-task {
+  background-color: var(--pale-green);
 }

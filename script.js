@@ -184,6 +184,7 @@ async function addTaskToDB(e) {
         description: taskDescription.value,
         uid: auth.currentUser.uid,
         createdAt: serverTimestamp(),
+        checked: false,
       });
     }
   } catch (error) {
@@ -316,17 +317,32 @@ window.editTask = async function (buttonEl) {
   toggleTaskForm();
 };
 
+window.handleChange = async function (boxEl) {
+  const checked = boxEl.checked;
+  const taskId = boxEl.closest(".task").id;
+  const todoRef = doc(db, collectionName, taskId);
+  await updateDoc(todoRef, {
+    checked: checked,
+  });
+};
+
 function renderTask(doc, containerEl) {
   const task = doc.data();
   const taskId = doc.id;
-
+  console.log(task.checked);
   containerEl.innerHTML += `
-      <div id="${taskId}" class="task">
+      <div id="${taskId}" class="task ${task.checked ? "completed-task" : ""}">
           <p><strong>Title:</strong> ${task.title}</p>
           <p><strong>Date:</strong> ${task.dueDate}</p>
           <p><strong>Description:</strong> ${lineBreaks(task.description)}</p>
-          <button onclick="editTask(this)" type="button" class="btn todoEdit">Edit</button>
+          <div class="checked-text"><input type="checkbox" id="done-task" onchange="handleChange(this)" ${
+            task.checked ? "checked" : ""
+          } data-task="${task.checked}" /> completed</div>
+          <button onclick="editTask(this)" type="button" ${
+            task.checked ? "disabled" : ""
+          } class="btn todoEdit">Edit</button>
           <button onclick="deleteTask(this)" type="button" class="btn todoDelete">Delete</button>
+          
         </div>
   `;
 }
