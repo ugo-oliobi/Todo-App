@@ -111,6 +111,13 @@
           </menu>
         </form>
       </dialog>
+      <div class="filters-section">
+        <button id="all-filter-btn" class="filter-btn btn active">All</button>
+        <button id="pending-filter-btn" class="filter-btn btn">Pending</button>
+        <button id="completed-filter-btn" class="filter-btn btn">
+          Completed
+        </button>
+      </div>
       <div class="task-container">
         <button class="btn add-new-task">Add New Task</button>
         <form class="task-form hidden" id="task-form">
@@ -147,7 +154,9 @@
             <button class="btn add-task-btn">Add Task</button>
           </div>
         </form>
-        <div id="todo-container"></div>
+        <div id="todo-container">
+          <div id="spinner" class="spinner"></div>
+        </div>
       </div>
       <dialog id="confirm-close-dialog">
         <form method="dialog">

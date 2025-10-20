@@ -78,23 +78,29 @@ const closeTaskFormCancelBtn = document.getElementById("closeform-cancel-btn");
 const discardTaskFormBtn = document.getElementById("closeform-discard-btn");
 const todoContainer = document.getElementById("todo-container");
 const addTaskBtn = document.querySelector(".add-task-btn");
+const spinner = document.getElementById("spinner");
+const filterSection = document.querySelector(".filters-section");
+const filterBtn = document.querySelectorAll(".filter-btn");
+const showAllBtn = document.getElementById("all-filter-btn");
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
     showLoginView();
     showUserProfilePicture(profilePicture, user);
     userGreeting(greetingEl, user);
-    fetchTodoListRealTime(user);
+    getAll(user);
   } else {
     showLogoutView();
   }
 });
 
 //Collection Name
-
+spinner.style.display = "block"; // Show spinner initially
 const collectionName = "todoList";
 let isUpdating = false;
 let todoTaskId;
+let firstLoad = true;
+let unsubscribe = null;
 
 //Event Listeners
 
@@ -157,6 +163,22 @@ editProfileCancelBtn.addEventListener("click", () => {
   clearEditProfileFields();
 });
 taskForm.addEventListener("submit", addTask);
+
+filterSection.addEventListener("click", (event) => {
+  if (event.target.classList.contains("filters-section")) return;
+  const user = auth.currentUser;
+  const btn = event.target;
+  filterBtn.forEach((el) => el.classList.remove("active"));
+  btn.classList.add("active");
+
+  if (btn.id === "pending-filter-btn") {
+    getPending(user);
+  } else if (btn.id === "completed-filter-btn") {
+    getCompleted(user);
+  } else {
+    getAll(user);
+  }
+});
 
 //Functions
 
@@ -329,7 +351,7 @@ window.handleChange = async function (boxEl) {
 function renderTask(doc, containerEl) {
   const task = doc.data();
   const taskId = doc.id;
-  console.log(task.checked);
+
   containerEl.innerHTML += `
       <div id="${taskId}" class="task ${task.checked ? "completed-task" : ""}">
           <p><strong>Title:</strong> ${task.title}</p>
@@ -350,19 +372,63 @@ function lineBreaks(str) {
   return str.replace(/\n/g, "<br />");
 }
 
-function fetchTodoListRealTime(user) {
-  const todoRef = collection(db, collectionName);
+function fetchTodoListRealTime(query, mode = "all") {
+  // Stop old listener before starting new one
+  if (unsubscribe) unsubscribe();
+  unsubscribe = onSnapshot(query, (querySnapshot) => {
+    if (firstLoad) {
+      spinner.style.display = "none"; // Hide spinner after first data arrives
+      firstLoad = false;
+    }
+    todoContainer.innerHTML = "";
 
+    if (querySnapshot.empty) {
+      if (mode === "completed") {
+        todoContainer.innerHTML = `<div class="task-message"><h3>You haven't completed any tasks yet.</h3></div>`;
+      } else if (mode === "pending") {
+        todoContainer.innerHTML = `<div class="task-message"><h3>No pending tasks. You're all caught up!</h3></div>`;
+      } else {
+        todoContainer.innerHTML = `<div class="task-message"><h3>Looks like your task list is empty. <br> Hit 'Add New Task' to begin.</h3></div>`;
+      }
+    } else {
+      querySnapshot.forEach((doc) => {
+        renderTask(doc, todoContainer);
+      });
+    }
+  });
+}
+
+// Cleanup listener when user leaves or refreshes
+window.addEventListener("beforeunload", () => {
+  if (unsubscribe) unsubscribe();
+});
+
+function getPending(user) {
+  const todoRef = collection(db, collectionName);
+  const q = query(
+    todoRef,
+    where("uid", "==", user.uid),
+    where("checked", "==", false),
+    orderBy("createdAt", "desc")
+  );
+  fetchTodoListRealTime(q, "pending");
+}
+function getCompleted(user) {
+  const todoRef = collection(db, collectionName);
+  const q = query(
+    todoRef,
+    where("uid", "==", user.uid),
+    where("checked", "==", true),
+    orderBy("createdAt", "desc")
+  );
+  fetchTodoListRealTime(q, "completed");
+}
+function getAll(user) {
+  const todoRef = collection(db, collectionName);
   const q = query(
     todoRef,
     where("uid", "==", user.uid),
     orderBy("createdAt", "desc")
   );
-
-  onSnapshot(q, (querySnapshot) => {
-    todoContainer.innerHTML = "";
-    querySnapshot.forEach((doc) => {
-      renderTask(doc, todoContainer);
-    });
-  });
+  fetchTodoListRealTime(q);
 }
