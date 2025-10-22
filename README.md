@@ -31,17 +31,6 @@ A simple and intuitive Todo List application that helps users manage tasks effic
 - Run the app
   npm start
 
-📁 Project Structure
-├── public/
-│ └── index.html
-├── src/
-│ ├── components/
-│ ├── firebase.js
-│ ├── App.js
-│ └── index.js
-├── package.json
-└── README.md
-
 ## 🧪 Usage
 
 - Sign up or log in
