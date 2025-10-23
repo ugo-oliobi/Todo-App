@@ -165,19 +165,27 @@ editProfileCancelBtn.addEventListener("click", () => {
 taskForm.addEventListener("submit", addTask);
 
 filterSection.addEventListener("click", (event) => {
-  if (event.target.classList.contains("filters-section")) return;
-  const user = auth.currentUser;
-  const btn = event.target;
-  filterBtn.forEach((el) => el.classList.remove("active"));
-  btn.classList.add("active");
+  const clicked = event.target;
 
-  if (btn.id === "pending-filter-btn") {
-    getPending(user);
-  } else if (btn.id === "completed-filter-btn") {
-    getCompleted(user);
-  } else {
-    getAll(user);
-  }
+  // Ignore clicks on the container itself
+  if (clicked.classList.contains("filters-section")) return;
+
+  // Highlight the active button
+  filterBtn.forEach((el) => el.classList.remove("active"));
+  clicked.classList.add("active");
+
+  // Get current user
+  const user = auth.currentUser;
+
+  // Map button IDs to corresponding functions
+  const filterActions = {
+    "pending-filter-btn": getPending,
+    "completed-filter-btn": getCompleted,
+    "all-filter-btn": getAll,
+  };
+  // Execute the appropriate function
+  const action = filterActions[clicked.id] || getAll;
+  action(user);
 });
 
 //Functions
